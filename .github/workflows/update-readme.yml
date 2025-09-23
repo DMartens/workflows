@@ -1,0 +1,57 @@
+name: update-readme
+
+on:
+    schedule:
+        - cron: "0 8 * * *" # Runs every day at 08:00 AM UTC
+
+    workflow_dispatch:
+
+    workflow_call:
+        secrets:
+            workflow_push_bot_token:
+                required: true
+                description: Token for the workflow bot to push changes
+
+jobs:
+    update-readme:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Check out repo
+              uses: actions/checkout@v5
+              with:
+                  token: ${{ secrets.workflow_push_bot_token }}
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v5
+              with:
+                  node-version: "lts/*"
+
+            - name: Copy update-readme script from workflows repository
+              run: curl --create-dirs -fsSL https://raw.githubusercontent.com/eslint/workflows/main/tools/update-readme.js -o tools/update-readme.js
+
+            - name: Update README with latest sponsor data
+              run: node tools/update-readme.js
+
+            - name: Setup Git
+              run: |
+                  git config user.name "GitHub Actions Bot"
+                  git config user.email "<eslint@googlegroups.com>"
+
+            - name: Commit README
+              run: |
+                  # Unmatched patterns are dropped to avoid git errors
+                  shopt -s nullglob
+
+                  if [ -z "$(git status --porcelain)" ]; then
+                      echo "Data did not change."
+                  else
+                      echo "Data changed!"
+
+                      # commit the result
+                      git add README.md packages/**/README.md
+                      git commit -m "docs: Update README sponsors"
+
+                      # push back to source control
+                      git push origin HEAD
+                  fi

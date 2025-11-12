@@ -31,5 +31,5 @@ jobs:
                   stale-pr-message: "Hi everyone, it looks like we lost track of this pull request. Please review and see what the next steps are. This pull request will auto-close in 7 days without an update."
                   close-pr-message: "This pull request was auto-closed due to inactivity. While we wish we could keep working on every request, we unfortunately don't have the bandwidth to continue here and need to focus on other things. You can resubmit this pull request if you would like to continue working on it."
                   exempt-all-assignees: true
-                  exempt-issue-labels: accepted
-                  exempt-pr-labels: accepted
+                  exempt-issue-labels: accepted,blocked
+                  exempt-pr-labels: accepted,blocked

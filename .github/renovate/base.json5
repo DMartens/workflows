@@ -18,6 +18,13 @@
       matchManagers: ["github-actions"],
     },
     {
+      description: "Pin 3rd-party actions",
+      extends: ["helpers:pinGitHubActionDigests"],
+      addLabels: ["deps:actions"],
+      matchManagers: ["github-actions"],
+      matchPackageNames: ["!actions/**"]
+    },
+    {
       description: "Use the deps:npm label for npm manager packages (this means Renovate's npm manager).",
       addLabels: ["deps:npm"],
       matchManagers: ["npm"],
